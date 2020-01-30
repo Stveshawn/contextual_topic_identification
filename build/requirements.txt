@@ -1,0 +1,9 @@
+nltk
+language_detector
+symspellpy
+numpy
+pandas
+sentence-transformers
+sklearn
+matplotlib
+umap-learn
