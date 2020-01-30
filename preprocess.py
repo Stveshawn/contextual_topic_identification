@@ -1,7 +1,6 @@
-import numpy as np
-import pandas as pd
 import re
-from nltk.tokenize import word_tokenize
+import nltk
+from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.corpus import stopwords
 from language_detector import detect_language
 
@@ -27,7 +26,7 @@ def f_lower(s):
     """
     return s.lower()
 
-
+# some basic normalization
 def f_base(s):
     """
     :param s: string to be processed
@@ -38,20 +37,12 @@ def f_base(s):
     s = re.sub(r'&gt|&lt', ' ', s)
     s = re.sub(r'([a-z])\1{3,}', r'\1', s)
     return s
-# rws = data.review.values
-# rws = list(map(lambda w: w.lower(), rws))
-# rws = list(map(lambda w: re.sub(r'&gt|&lt', ' ', w), rws))
-# rws = list(map(lambda w: re.sub(r'([a-z])\1{3,}', r'\1', w), rws))
-
-
-
-# # filtering out non-english reviews
-# q = []
-# for _ in rws:
-#     if detect_language(_) == 'English':
-#         q.append(_)
 
 # filtering out stop words
+#### preprocessing
+stop_words = set(stopwords.words('english'))
+stop_words = stop_words.union(set(['cant', 'cannot', 'can\'t', 'wont', 'won\'t']))
+
 def f_stopw(s, stop_words):
     """
     filtering out stop words
@@ -78,14 +69,23 @@ def f_lem(w):
 # aggro -> aggressive
 
 
-# typo correction using symspellpy
+# filter nouns
+def f_noun(w):
+    """
+    selecting nouns
+    """
+    return [word for (word, pos) in nltk.pos_tag(w) if pos[:2] == 'NN']
+
+
+# # typo correction using symspellpy
+print("Loading symspell dictionary ...")
 sym_spell = SymSpell(max_dictionary_edit_distance=4, prefix_length=7)
 dictionary_path = pkg_resources.resource_filename(
     "symspellpy", "frequency_dictionary_en_82_765.txt")
 # term_index is the column of the term and count_index is the
 # column of the term frequency
 sym_spell.load_dictionary(dictionary_path, term_index=0, count_index=1)
-
+print("Loading symspell dictionary done.")
 
 # typo correction
 def f_typo(s):
@@ -108,24 +108,23 @@ def f_typo(s):
 
 
 
-#### preprocessing
-stop_words = set(stopwords.words('english'))
-stop_words = stop_words.union(set(['cant', 'cannot', 'can\'t', 'wont', 'won\'t']))
 
-
-def preprocess(s):
+def preprocess(rw):
     """
     :param s: string to be processed
     :return: list of processed words
     """
-    if not f_lan(s):
+    # detect language: english review
+    if not f_lan(rw):
         return
-    s = f_lower(s)
-    s = f_base(s)
-    s = word_tokenize(s)
-    s = f_punct(s)
-    s = f_lem(s)
-    s = f_stopw(s, stop_words)
-    s = f_typo(s)
-    return s
-
+    # lower case
+    rw = f_lower(rw)
+    rw = f_base(rw)
+    # sentence tokenizer
+    sens = sent_tokenize(rw)
+    r_sens = []
+    for sen in sens:
+        r_sen = ' '.join(f_typo(f_punct(word_tokenize(sen))))
+        if r_sen:
+            r_sens.append(r_sen)
+    return r_sens

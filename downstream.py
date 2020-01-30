@@ -1,23 +1,32 @@
 from sklearn.decomposition import PCA
-from sklearn.manifold import TSNE
 import matplotlib.pyplot as plt
+import umap
 from embedding import *
 
 from sklearn.mixture import GaussianMixture
 
-# pca
-pca = PCA(n_components=2)
-DR2_pca = pca.fit_transform(vecs)
-plt.plot(*DR2_pca.T, '.')
+# dimension reduction
+# PPA+PCA
+def downstream(vecs, dim_z=200):
+    """
+    show the visualization of clustering
+    :param vecs: embedded vectors from sentences
+    :return: None
+    """
+    pca = PCA(n_components=dim_z)
+    pca.fit(vecs)
+    print('Variation explained: {}'.format(sum(pca.explained_variance_ratio_)))
+    v_dr = pca.transform(vecs)
 
-# tsne
-tsne = TSNE()
-DR2 = tsne.fit_transform(vecs)
-plt.plot(*DR2.T,'.')
+    # GMM for clustering
+    GMM = GaussianMixture(n_components=5)
+    GMM.fit(v_dr)
+    lbs = GMM.predict(v_dr)
 
-# GMM
-GMM = GaussianMixture(n_components=5)
-GMM.fit(vecs)
-
-lbs = GMM.predict(vecs)
-plt.scatter(*DR2.T, c=lbs)
+    # visualization
+    reducer = umap.UMAP()
+    embedding = reducer.fit_transform(v_dr)
+    plt.figure(figsize=(15,10))
+    plt.scatter(embedding[:,0], embedding[:,1], c=lbs, alpha=0.3)
+    plt.colorbar()
+    plt.show();
