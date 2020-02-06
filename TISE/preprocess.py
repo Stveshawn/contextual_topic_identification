@@ -1,16 +1,10 @@
 from stop_words import get_stop_words
 from nltk.stem.porter import PorterStemmer
-from gensim import corpora, models
-import gensim
-
-import numpy as np
-import pandas as pd
 import re
 import nltk
 from nltk.tokenize import word_tokenize
 from language_detector import detect_language
 
-from nltk.stem import WordNetLemmatizer
 import pkg_resources
 from symspellpy import SymSpell, Verbosity
 
@@ -142,18 +136,27 @@ def f_stopw(w_list):
     return [word for word in w_list if word not in en_stop]
 
 
-def preprocess(rw, to_word_level=False):
+def preprocess_sent(rw):
     """
-    get preprocessed data from raw review texts
-    :param s: rw to be processed
-    :return: pre-processed rw
+    Get sentence level preprocessed data from raw review texts
+    :param rw: review to be processed
+    :return: sentence level pre-processed review
     """
     s = f_base(rw)
     if not f_lan(s):
         return None
-    if not to_word_level:
-        return s
+    return s
 
+
+def preprocess_word(s):
+    """
+    Get word level preprocessed data from preprocessed sentences
+    including: remove punctuation, select noun, fix typo, stem, stop_words
+    :param s: sentence to be processed
+    :return: word level pre-processed review
+    """
+    if not s:
+        return None
     w_list = word_tokenize(s)
     w_list = f_punct(w_list)
     w_list = f_noun(w_list)
