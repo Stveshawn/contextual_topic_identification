@@ -5,5 +5,5 @@
 *.cubin
 *.fatbin
 *.ipynb
-__pycache__/
-*.swap
+*/__pycache__/
+*.swp
