@@ -1,3 +1,4 @@
+.idea
 *.i
 *.ii
 *.gpu
@@ -5,5 +6,5 @@
 *.cubin
 *.fatbin
 *.ipynb
-*/__pycache__/
+model/__pycache__
 *.swp
