@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 from gensim.models.coherencemodel import CoherenceModel
 import numpy as np
+import os
 
 
 def get_topic_words(token_lists, labels, k=None):
@@ -73,12 +74,17 @@ def visualize(model):
     Visualize the result for the topic model by 2D embedding (UMAP)
     :param model: Topic_Model object
     """
+    if model.method == 'LDA':
+        return
     reducer = umap.UMAP()
     print('Calculating UMAP projection ...')
     vec_umap = reducer.fit_transform(model.vec[model.method])
     print('Calculating UMAP projection. Done!')
     plot_proj(vec_umap, model.cluster_model.labels_)
-    plt.savefig('/contextual_topic_identification/docs/images/2D_vis_' + model.id)
+    dr = '/contextual_topic_identification/docs/images/{}/{}'.format(model.method, model.id)
+    if not os.path.exists(dr):
+        os.makedirs(dr)
+    plt.savefig(dr + '/2D_vis')
 
 def get_wordcloud(model, token_lists, topic):
     """
@@ -86,6 +92,8 @@ def get_wordcloud(model, token_lists, topic):
     :param model: Topic_Model object
     :param sentences: preprocessed sentences from docs
     """
+    if model.method == 'LDA':
+        return
     print('Getting wordcloud for topic {} ...'.format(topic))
     lbs = model.cluster_model.labels_
     tokens = ' '.join([' '.join(_) for _ in np.array(token_lists)[lbs == topic]])
@@ -99,5 +107,8 @@ def get_wordcloud(model, token_lists, topic):
     plt.imshow(wordcloud)
     plt.axis("off")
     plt.tight_layout(pad=0)
-    plt.savefig('/contextual_topic_identification/docs/images/Topic' + str(topic) + '_wordcloud_' + model.id)
+    dr = '/contextual_topic_identification/docs/images/{}/{}'.format(model.method, model.id)
+    if not os.path.exists(dr):
+        os.makedirs(dr)
+    plt.savefig(dr + '/Topic' + str(topic) + '_wordcloud')
     print('Getting wordcloud for topic {}. Done!'.format(topic))

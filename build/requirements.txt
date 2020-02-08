@@ -2,7 +2,12 @@ nltk
 language_detector
 symspellpy
 numpy
+gensim
 pandas
+stop_words
+wordcloud
+tensorflow
+keras
 sentence-transformers
 sklearn
 matplotlib
