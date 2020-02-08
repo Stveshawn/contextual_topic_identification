@@ -12,20 +12,22 @@ import argparse
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--fpath', default='../../data/steam_reviews.csv')
+    parser.add_argument('--fpath', default='/contextual_topic_identification/data/steam_reviews.csv')
     parser.add_argument('--ntopic', default=10)
+    parser.add_argument('--method', default='TFIDF')
+    parser.add_argument('--samp_size', default=10000)
     args = parser.parse_args()
 
-    data = pd.read_csv(args.fpath)
+    data = pd.read_csv(str(args.fpath))
     data = data.fillna('')  # only the comments has NaN's
     rws = data.review
-    sentences, token_lists, idx_in = preprocess(rws, samp_size=10000)
+    sentences, token_lists, idx_in = preprocess(rws, samp_size=int(args.samp_size))
     # Define the topic model object
-    tm = Topic_Model(k = args.ntopic, method = 'TFIDF')
+    tm = Topic_Model(k = int(args.ntopic), method = str(args.method))
     # Fit the topic model by chosen method
     tm.fit(sentences, token_lists)
     # Evaluate using metrics
-    with open("../docs/saved_models/{}.file".format(tm.id), "wb") as f:
+    with open("/contextual_topic_identification/docs/saved_models/{}.file".format(tm.id), "wb") as f:
         pickle.dump(tm, f, pickle.HIGHEST_PROTOCOL)
 
     print('Coherence:', get_coherence(tm, token_lists, 'c_v'))
