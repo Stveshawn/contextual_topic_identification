@@ -22,6 +22,8 @@ cd contextual_topic_identification
 and make sure you have dataset in the `data` folder (you can specify the path in the bash script later).
 
 
+To run the model and get trained model objects and visualization
+
 ### With Docker
 
 run the bash script on your terminal
@@ -39,7 +41,6 @@ Four parameters can be specified in the bash script
 + `ntopic`: number of topics
 + `fpath=/contextual_topic_identification/data/steam_reviews.csv`: file path to the csv data
 
-To run the model and get trained model objects and visualization
 
 
 
