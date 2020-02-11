@@ -1,26 +1,51 @@
-# Topic Identification based on Sentence Embedding (TISE) for steam reviews
+# Contextual Topic Identification for Steam Reviews
 
-This repository is the implementation of semantically meaningful topic identification by sentence embedding. The implementation is based on pre-trained sentence embedding models (BERT/RoBERTa). The analysis is conducted on the dataset of game reviews on the steam platform.
+This repository is the implementation of contextual topic identification model. The model is based on _LDA_ probabilistic topic assignment and pre-trained sentence embeddings from _BERT/RoBERTa_. The analysis is conducted on the dataset of game reviews on the steam platform.
 
 ## Motivation
 
 Product reviews are important as influencing people's choices especially for online shopping. We usually have dreadfully huge numbers of reviews for whatever products. However, many platforms have barely a satisfying categorization system for the reviews when it comes to what the reviewers are really talking about. Steam, for example, has a very carefully designed system where people can do a lot of things, but still there is no such access to categorizing the reviews by their semantic meanings.
 
-![Steam review logo](https://steamcdn-a.akamaihd.net/steam/clusters/about_i18n_assets/about_i18n_assets_0/feature_reviews_header_english.jpg?t=1569333767)
+![Steam review logo](./docs/images/steam_review.jpeg)
 
-Therefore, we provide a topic identification procedure based on sentence embedding and unsupervised learning methods to explore __semantically meaningful__ categories out of the oceans of steam reviews.
+Therefore, we provide a topic identification procedure thats combines both bag-of-words and contextual information to explore potential __semantically meaningful__ categories out of the oceans of steam reviews.
 
 ## Setup
 
-### Installation
+Clone the repo
 
-+ Instruction: run main.py to get plots from clustering. It will call the other functions. (Data and modules are required to run the code. Docker to be added in week 3.)
+```
+git clone https://github.com/Stveshawn/contextual_topic_identification.git
+cd contextual_topic_identification
+```
 
-+ Dependency: downstream.py -> embedding.py -> preprocessing.py
+and make sure you have dataset in the `data` folder (you can specify the path in the bash script later).
+
+
+### With Docker
+
+run the bash script on your terminal
+
+```
+sudo bash docker_build_run.sh
+```
+
+The results will be saved in the `docs` folder with corresponding model id (_Method_Year_Month_Day_Hour_Minute_Second_).
+
+Four parameters can be specified in the bash script
+
++ `samp_size`: number of reviews used in the model
++ `method={"TFIDF", "LDA", "BERT", "LDA_BERT"}`: method for the topic model
++ `ntopic`: number of topics
++ `fpath=/contextual_topic_identification/data/steam_reviews.csv`: file path to the csv data
+
+To run the model and get trained model objects and visualization
+
+
 
 ## Data
 
-[Steam review dataset](https://www.kaggle.com/luthfim/steam-reviews-dataset)
+The data used ([Steam review dataset](https://www.kaggle.com/luthfim/steam-reviews-dataset)) is published on Kaggle covering ~480K reviews for 46 best selling video games on steam.
 
 ## Pipeline
 
