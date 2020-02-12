@@ -1,0 +1,14 @@
+matplotlib
+numpy>=1.18.1
+pandas
+stop_words
+language_detector
+sklearn
+symspellpy==6.5.2
+gensim==3.8.1
+wordcloud==1.6.0
+tensorflow==1.14.0
+keras==2.3.1
+sentence-transformers==0.2.5
+umap-learn==0.3.10
+nltk==3.4.5
