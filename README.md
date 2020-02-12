@@ -41,7 +41,10 @@ Four parameters can be specified in the bash script
 + `ntopic`: number of topics
 + `fpath=/contextual_topic_identification/data/steam_reviews.csv`: file path to the csv data
 
-
+To run a test case on the sampled test data, do
+```
+sudo bash test.sh
+```
 
 
 ## Data
@@ -100,4 +103,4 @@ Evaluation of different topic identification models with `n_topic=10`
 
 [SymSpell](https://github.com/wolfgarbe/SymSpell): 1 million times faster through Symmetric Delete spelling correction algorithm
 
-[Gensim](https://github.com/RaRe-Technologies/gensim) – Topic Modelling in Python
+[Gensim](https://github.com/RaRe-Technologies/gensim): Topic Modelling in Python
