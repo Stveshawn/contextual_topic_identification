@@ -46,26 +46,31 @@ Four parameters can be specified in the bash script
 
 ## Data
 
-The data used ([Steam review dataset](https://www.kaggle.com/luthfim/steam-reviews-dataset)) is published on Kaggle covering ~480K reviews for 46 best selling video games on steam.
+The dataset ([Steam review dataset](https://www.kaggle.com/luthfim/steam-reviews-dataset)) is published on Kaggle covering ~480K reviews for 46 best selling video games on steam.
 
-## Pipeline
+To successfully run the model, you should have this dataset downloaded (kaggle authentication required) and placed in the `data` folder (or specify your own file path in the bash script).
 
-+ steam review texts
+## Model
 
-+ preprocessing
-  + lowercase
-  + normalization (language, repetition)
-  + lemmatization
-  + stop words
-  + fix typos
+To identify the potential topics of the target documents, traditional approaches are
 
-+ doc embedding: word embedding weighted by TF-IDF
++ Latent Dirichlet Allocation
 
-+ downstream tasks
++ Embedding + Clustering
 
-  + clustering
-  + detecting meaningless reviews
+Although LDA generally works well for topic modeling tasks, it fails with short documents, in which there isn’t much text to model and documents that don’t coherently discuss topics. Using only bag-of-words information also make it quite limited. 
+
+The contextual topic identification model leverages both bag-of-words and contextual information by including both the LDA topic probabilities and the sentence embeddings. The model is as follows
+
+
+
+
+where we 
+
++ take the information from LDA probabilistic topic assignment (`v_1`) and sentence embeddings (`v_2`)
++ concatenate `\lambda * v_1` and `v_2` to get `v_{full}`
++ learn the latent space representation `v_{latent}` of by autoencoder
++ implement clustering on the latent space representations.
+
 
 ## Result
-
-webapp by streamlit
