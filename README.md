@@ -1,45 +1,103 @@
-# Topic Identification based on Sentence Embedding (TISE) for steam reviews
+# Contextual Topic Identification for Steam Reviews
 
-This repository is the implementation of semantically meaningful topic identification by sentence embedding. The implementation is based on pre-trained sentence embedding models (BERT/RoBERTa). The analysis is conducted on the dataset of game reviews on the steam platform.
+This repository is the implementation of contextual topic identification model. The model is based on _LDA_ probabilistic topic assignment and pre-trained sentence embeddings from _BERT/RoBERTa_. The analysis is conducted on the dataset of game reviews on the steam platform.
 
 ## Motivation
 
 Product reviews are important as influencing people's choices especially for online shopping. We usually have dreadfully huge numbers of reviews for whatever products. However, many platforms have barely a satisfying categorization system for the reviews when it comes to what the reviewers are really talking about. Steam, for example, has a very carefully designed system where people can do a lot of things, but still there is no such access to categorizing the reviews by their semantic meanings.
 
-![Steam review logo](https://steamcdn-a.akamaihd.net/steam/clusters/about_i18n_assets/about_i18n_assets_0/feature_reviews_header_english.jpg?t=1569333767)
+![Steam review logo](./docs/images/steam_review.jpeg)
 
-Therefore, we provide a topic identification procedure based on sentence embedding and unsupervised learning methods to explore __semantically meaningful__ categories out of the oceans of steam reviews.
+Therefore, we provide a topic identification procedure thats combines both bag-of-words and contextual information to explore potential __semantically meaningful__ categories out of the oceans of steam reviews.
 
 ## Setup
 
-### Installation
+Clone the repo
 
-+ Instruction: run main.py to get plots from clustering. It will call the other functions. (Data and modules are required to run the code. Docker to be added in week 3.)
+```
+git clone https://github.com/Stveshawn/contextual_topic_identification.git
+cd contextual_topic_identification
+```
 
-+ Dependency: downstream.py -> embedding.py -> preprocessing.py
+and make sure you have dataset in the `data` folder (you can specify the path in the bash script later).
+
+
+To run the model and get trained model objects and visualization
+
+### With Docker
+
+run the bash script on your terminal
+
+```
+sudo bash docker_build_run.sh
+```
+
+The results will be saved in the `docs` folder with corresponding model id (_Method_Year_Month_Day_Hour_Minute_Second_).
+
+Four parameters can be specified in the bash script
+
++ `samp_size`: number of reviews used in the model
++ `method={"TFIDF", "LDA", "BERT", "LDA_BERT"}`: method for the topic model
++ `ntopic`: number of topics
++ `fpath=/contextual_topic_identification/data/steam_reviews.csv`: file path to the csv data
+
+
+
 
 ## Data
 
-[Steam review dataset](https://www.kaggle.com/luthfim/steam-reviews-dataset)
+The dataset ([Steam review dataset](https://www.kaggle.com/luthfim/steam-reviews-dataset)) is published on Kaggle covering ~480K reviews for 46 best selling video games on steam.
 
-## Pipeline
+To successfully run the model, you should have this dataset downloaded (kaggle authentication required) and placed in the `data` folder (or specify your own file path in the bash script).
 
-+ steam review texts
+## Model
 
-+ preprocessing
-  + lowercase
-  + normalization (language, repetition)
-  + lemmatization
-  + stop words
-  + fix typos
+To identify the potential topics of the target documents, traditional approaches are
 
-+ doc embedding: word embedding weighted by TF-IDF
++ Latent Dirichlet Allocation
 
-+ downstream tasks
++ Embedding + Clustering
 
-  + clustering
-  + detecting meaningless reviews
+Although LDA generally works well for topic modeling tasks, it fails with short documents, in which there isn’t much text to model and documents that don’t coherently discuss topics. Using only bag-of-words information also make it quite limited. 
+
+The contextual topic identification model leverages both bag-of-words and contextual information by including both the LDA topic probabilities and the sentence embeddings. The model is as follows
+
+![Model](./docs/images/model.png)
+
+
+where we 
+
++ take the information from LDA probabilistic topic assignment (`v_1`) and sentence embeddings (`v_2`)
++ concatenate `\lambda * v_1` and `v_2` to get `v_{full}`
++ learn the latent space representation `v_{latent}` of by autoencoder
++ implement clustering on the latent space representations.
+
 
 ## Result
 
-webapp by streamlit
+Visualizations (2D UMAP) of clustering results with different vectorization methods with `n_topic=10`
+
+| TF-IDF | BERT | LDA_BERT |
+|---|---|---|
+![Model](./docs/images/tfidf.png) | ![Model](./docs/images/bert.png) | ![Model](./docs/images/lda_bert.png)|
+
+
+Evaluation of different topic identification models with `n_topic=10`
+
+
+
+| Metric\Method | TF-IDF + Clustering | LDA | BERT + Clustering | LDA_BERT + Clustering |
+|---|---|---|---|---|
+|C_Umass|__-2.161__|-5.233|-4.368|-3.394|
+|CV|0.538|0.482|0.547|__0.551__|
+|Silhouette score|0.025|/|0.063|__0.234__|
+
+## Acknowledgements
+
+### Libraries
+
+[Sentence Transformers](https://github.com/UKPLab/sentence-transformers): Sentence Embeddings using BERT / RoBERTa / DistilBERT / ALBERT / XLNet with PyTorch
+
+[SymSpell](https://github.com/wolfgarbe/SymSpell): 1 million times faster through Symmetric Delete spelling correction algorithm
+
+[Gensim](https://github.com/RaRe-Technologies/gensim) – Topic Modelling in Python

@@ -152,9 +152,11 @@ class Topic_Model:
                                                                 passes=20)
                 print('Fitting LDA Done!')
         else:
+            print('Clustering embeddings ...')
             self.cluster_model = m_clustering(self.k)
             self.vec[method] = self.vectorize(sentences, token_lists, method)
             self.cluster_model.fit(self.vec[method])
+            print('Clustering embeddings. Done!')
 
     def predict(self, sentences, token_lists, out_of_sample=None):
         """
