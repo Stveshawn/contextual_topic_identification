@@ -98,6 +98,6 @@ Evaluation of different topic identification models with `n_topic=10`
 
 [Sentence Transformers](https://github.com/UKPLab/sentence-transformers): Sentence Embeddings using BERT / RoBERTa / DistilBERT / ALBERT / XLNet with PyTorch
 
-[SymSpell](https://github.com/wolfgarbe/SymSpell)SymSpell: 1 million times faster through Symmetric Delete spelling correction algorithm
+[SymSpell](https://github.com/wolfgarbe/SymSpell): 1 million times faster through Symmetric Delete spelling correction algorithm
 
 [Gensim](https://github.com/RaRe-Technologies/gensim) – Topic Modelling in Python
