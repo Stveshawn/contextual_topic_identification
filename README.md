@@ -62,7 +62,7 @@ Although LDA generally works well for topic modeling tasks, it fails with short 
 
 The contextual topic identification model leverages both bag-of-words and contextual information by including both the LDA topic probabilities and the sentence embeddings. The model is as follows
 
-
+![Model](./docs/images/model.png)
 
 
 where we 
@@ -74,3 +74,30 @@ where we
 
 
 ## Result
+
+Visualizations (2D UMAP) of clustering results with different vectorization methods with `n_topic=10`
+
+| TF-IDF | BERT | LDA_BERT |
+|---|---|---|
+![Model](./docs/images/tfidf.png) | ![Model](./docs/images/bert.png) | ![Model](./docs/images/lda_bert.png)|
+
+
+Evaluation of different topic identification models with `n_topic=10`
+
+
+
+| Metric\Method | TF-IDF + Clustering | LDA | BERT + Clustering | LDA_BERT + Clustering |
+|---|---|---|---|---|
+|C_Umass|__-2.161__|-5.233|-4.368|-3.394|
+|CV|0.538|0.482|0.547|__0.551__|
+|Silhouette score|0.025|/|0.063|__0.234__|
+
+## Acknowledgements
+
+### Libraries
+
+[Sentence Transformers](https://github.com/UKPLab/sentence-transformers): Sentence Embeddings using BERT / RoBERTa / DistilBERT / ALBERT / XLNet with PyTorch
+
+[SymSpell](https://github.com/wolfgarbe/SymSpell)SymSpell: 1 million times faster through Symmetric Delete spelling correction algorithm
+
+[Gensim](https://github.com/RaRe-Technologies/gensim) – Topic Modelling in Python
