@@ -7,7 +7,7 @@ sklearn
 symspellpy==6.5.2
 gensim==3.8.1
 wordcloud==1.6.0
-tensorflow==1.14.0
+tensorflow==2.3.1
 keras==2.3.1
 sentence-transformers==0.2.5
 umap-learn==0.3.10
